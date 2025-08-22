@@ -1,3 +1,4 @@
+// 이거 왜 시간초과 안나냐 ㅋㅋㅋ 나중에 stack으로 다시 풀어보자
 import java.util.*;
 class Solution {
     public int[] solution(int[] prices) {
