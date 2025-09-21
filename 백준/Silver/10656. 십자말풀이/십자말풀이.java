@@ -24,17 +24,7 @@ public class Main {
 				// 가로
 				if (puzzle[i][j].equals(".") && j + 2 <= M && !puzzle[i][j + 1].equals("#")
 						&& !puzzle[i][j + 2].equals("#")) {
-					boolean check = true;
-					for (int k = j; k > 1; k--) {
-						if (!puzzle[i][k - 1].equals("#")) {
-							check = false;
-							break;
-						} else {
-							break;
-						}
-					}
-
-					if (check) {
+					if (j == 1 || puzzle[i][j - 1].equals("#")) {
 						puzzle[i][j] = "" + count++;
 					}
 				}
@@ -42,17 +32,7 @@ public class Main {
 				// 세로
 				if (puzzle[i][j].equals(".") && i + 2 <= N && !puzzle[i + 1][j].equals("#")
 						&& !puzzle[i + 2][j].equals("#")) {
-					boolean check = true;
-					for (int k = i; k > 1; k--) {
-						if (!puzzle[k - 1][j].equals("#")) {
-							check = false;
-							break;
-						} else {
-							break;
-						}
-					}
-
-					if (check) {
+					if (i == 1 || puzzle[i - 1][j].equals("#")) {
 						puzzle[i][j] = "" + count++;
 					}
 				}
