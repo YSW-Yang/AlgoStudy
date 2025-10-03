@@ -17,8 +17,8 @@ public class Main {
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringBuilder sb = new StringBuilder();
-		HashMap<Character, ArrayList<Location>> hashMap = new HashMap<Character, ArrayList<Location>>();
-		HashMap<Character, Integer> hashmap1 = new HashMap<Character, Integer>();
+		HashMap<Character, ArrayList<Location>> charLocations = new HashMap<Character, ArrayList<Location>>();
+		HashMap<Character, Integer> charFrequencies = new HashMap<Character, Integer>();
 		String[] strArr = br.readLine().split(" ");
 		int N = Integer.parseInt(strArr[0]);
 		int M = Integer.parseInt(strArr[1]);
@@ -34,25 +34,25 @@ public class Main {
 
 		String s = br.readLine();
 		for (int i = 0; i < s.length(); i++) {
-			hashMap.put(s.charAt(i), new ArrayList<Location>());
-			if (hashmap1.containsKey(s.charAt(i))) {
-				hashmap1.put(s.charAt(i), hashmap1.get(s.charAt(i)) + 1);
+			charLocations.put(s.charAt(i), new ArrayList<Location>());
+			if (charFrequencies.containsKey(s.charAt(i))) {
+				charFrequencies.put(s.charAt(i), charFrequencies.get(s.charAt(i)) + 1);
 			} else {
-				hashmap1.put(s.charAt(i), 1);
+				charFrequencies.put(s.charAt(i), 1);
 			}
 		}
 
 		for (int i = 0; i < N; i++) {
 			for (int j = 0; j < M; j++) {
-				if (hashMap.containsKey(dungeon[i][j])) {
-					hashMap.get(dungeon[i][j]).add(new Location(i, j));
+				if (charLocations.containsKey(dungeon[i][j])) {
+					charLocations.get(dungeon[i][j]).add(new Location(i, j));
 				}
 			}
 		}
 
 		for (int i = 0; i < s.length(); i++) {
 			s.charAt(i);
-			int count = hashMap.get(s.charAt(i)).size() / hashmap1.get(s.charAt(i));
+			int count = charLocations.get(s.charAt(i)).size() / charFrequencies.get(s.charAt(i));
 			if (C > count) {
 				C = count;
 			}
@@ -62,7 +62,7 @@ public class Main {
 		int currentCol = 0;
 		for (int i = 0; i < C; i++) {
 			for (int j = 0; j < s.length(); j++) {
-				Location nextLocation = hashMap.get(s.charAt(j)).get(0);
+				Location nextLocation = charLocations.get(s.charAt(j)).get(0);
 				int nextRow = nextLocation.row - currentRow;
 				int nextCol = nextLocation.col - currentCol;
 
@@ -72,7 +72,7 @@ public class Main {
 				sb.append("P");
 				currentRow = nextLocation.row;
 				currentCol = nextLocation.col;
-				hashMap.get(s.charAt(j)).remove(0);
+				charLocations.get(s.charAt(j)).remove(0);
 			}
 		}
 
