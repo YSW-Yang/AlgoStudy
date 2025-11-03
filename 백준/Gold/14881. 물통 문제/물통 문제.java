@@ -11,26 +11,30 @@ public class Main {
 			int a = Integer.parseInt(strArr[0]);
 			int b = Integer.parseInt(strArr[1]);
 			int c = Integer.parseInt(strArr[2]);
-			int dividend = Math.max(a, b); // 나누어지는 수
-			int divider = Math.min(a, b); // 나누는 수
-			int remainder = dividend % divider;
+			int max = Math.max(a, b);
 
-			if (c > dividend) {
+			if (c > max) {
 				System.out.println("NO");
 				continue;
 			}
+			int gcd = getGCD(a, b);
 
-			while (remainder != 0) {
-				dividend = divider;
-				divider = remainder;
-				remainder = dividend % divider;
-			}
-
-			if (c % divider == 0) {
+			if (c % gcd == 0) {
 				System.out.println("YES");
 			} else {
 				System.out.println("NO");
 			}
 		}
+	}
+
+	public static int getGCD(int a, int b) {
+		a = Math.abs(a);
+		b = Math.abs(b);
+		while (b != 0) {
+			int temp = a % b;
+			a = b;
+			b = temp;
+		}
+		return a;
 	}
 }
