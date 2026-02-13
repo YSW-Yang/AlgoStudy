@@ -22,16 +22,15 @@ public class Main {
 		}
 
 		long sumIceWeight = 0;
-		for (int i = minLocation; i <= minLocation + 2 * k && i <= 1000000; i++) {
-			sumIceWeight += iceWeights[i];
-		}
-
 		long maxSumIceWeight = sumIceWeight;
-		for (int i = minLocation; i <= maxLocation - k; i++) {
-			sumIceWeight -= iceWeights[i];
-			if (i + 2 * k + 1 <= 1000000) {
-				sumIceWeight += iceWeights[i + 2 * k + 1];
+		int windowSize = 2 * k + 1;
+		for (int i = 0; i <= 1000000; i++) {
+			sumIceWeight += iceWeights[i];
+
+			if (i >= windowSize) {
+				sumIceWeight -= iceWeights[i - windowSize];
 			}
+
 			maxSumIceWeight = Math.max(maxSumIceWeight, sumIceWeight);
 		}
 
