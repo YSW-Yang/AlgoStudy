@@ -9,31 +9,30 @@ public class Main {
 		int n = Integer.parseInt(st.nextToken());
 		int k = Integer.parseInt(st.nextToken());
 		int[] stones = new int[n + 1];
-		int[] cost = new int[n + 1];
+		boolean[] dp = new boolean[n + 1];
+		dp[1] = true;
 
 		st = new StringTokenizer(br.readLine());
 		for (int i = 1; i <= n; i++) {
 			stones[i] = Integer.parseInt(st.nextToken());
 		}
 
-		for (int i = 2; i <= n; i++) {
-			cost[i] = (i - 1) * (1 + Math.abs(stones[1] - stones[i]));
-		}
-
-		for (int i = 2; i < n; i++) {
+		for (int i = 1; i < n; i++) {
+			if (!dp[i]) {
+				continue;
+			}
 			for (int j = i + 1; j <= n; j++) {
-				if (k < cost[i]) {
-					break;
-				}
-				cost[j] = Math.min(cost[j], (j - i) * (1 + Math.abs(stones[i] - stones[j])));
-			}
+				if (dp[j])
+					continue;
 
-			if (cost[n] <= k) {
-				System.out.println("YES");
-				return;
+				int power = (j - i) * (1 + Math.abs(stones[i] - stones[j]));
+
+				if (power <= k) {
+					dp[j] = true;
+				}
 			}
 		}
 
-		System.out.println("NO");
+		System.out.println(dp[n] ? "YES" : "NO");
 	}
 }
