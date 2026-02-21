@@ -7,8 +7,10 @@ public class Main {
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
+		StringBuilder sb = new StringBuilder();
 		int n = Integer.parseInt(st.nextToken());
 		Stack<Integer> stack = new Stack<>();
+
 		for (int i = 0; i < n; i++) {
 			st = new StringTokenizer(br.readLine());
 			int command = Integer.parseInt(st.nextToken());
@@ -17,17 +19,19 @@ public class Main {
 				stack.push(x);
 			} else if (command == 2) {
 				if (stack.isEmpty()) {
-					System.out.println(-1);
+					sb.append(-1).append("\n");
 				} else {
-					System.out.println(stack.pop());
+					sb.append(stack.pop()).append("\n");
 				}
 			} else if (command == 3) {
-				System.out.println(stack.size());
+				sb.append(stack.size()).append("\n");
 			} else if (command == 4) {
-				System.out.println(stack.isEmpty() ? 1 : 0);
+				sb.append(stack.isEmpty() ? 1 : 0).append("\n");
 			} else if (command == 5) {
-				System.out.println(stack.isEmpty() ? -1 : stack.peek());
+				sb.append(stack.isEmpty() ? -1 : stack.peek()).append("\n");
 			}
 		}
+
+		System.out.println(sb.toString());
 	}
 }
