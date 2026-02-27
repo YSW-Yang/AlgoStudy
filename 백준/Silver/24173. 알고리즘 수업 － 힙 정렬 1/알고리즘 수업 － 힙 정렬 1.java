@@ -27,7 +27,7 @@ public class Main {
 	}
 
 	public static void heapSort(int[] A, int n) {
-		buildMinHeap(A, N);
+		buildMinHeap(A, n);
 		for (int i = n; i >= 2; i--) {
 			swap(A, 1, i);
 			heapify(A, 1, i - 1);
