@@ -1,33 +1,22 @@
 import java.util.*;
 class Solution {
     public String solution(int[] numbers) {
-        String answer = "";
-        StringBuilder sb = new StringBuilder();
-        Integer[] copyNumbers = new Integer[numbers.length];
-        for(int i = 0; i < numbers.length; i++){
-            copyNumbers[i] = numbers[i];
+        String[] strNumbers = new String[numbers.length];
+        for (int i = 0; i < numbers.length; i++) {
+            strNumbers[i] = String.valueOf(numbers[i]);
         }
-
-        Arrays.sort(copyNumbers, new Comparator<Integer>() {
-            @Override
-            public int compare(Integer a, Integer b) {
-                String strA = a.toString();
-                String strB = b.toString();
-
-                return (strB + strA).compareTo(strA + strB);
-            }
-        });
         
-        if (copyNumbers[0].equals(0)) {
+        Arrays.sort(strNumbers, (o1, o2) -> (o2 + o1).compareTo(o1 + o2));
+
+        if (strNumbers[0].equals("0")) {
             return "0";
         }
-
-        for (int num : copyNumbers) {
-            sb.append(num);
+        
+        StringBuilder answer = new StringBuilder();
+        for (String str : strNumbers) {
+            answer.append(str);
         }
-        
-        answer = sb.toString();
-        
-        return answer;
+
+        return answer.toString();
     }
 }
