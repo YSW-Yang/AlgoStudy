@@ -1,98 +1,66 @@
 import java.util.*;
-
-class Location{
-    int y;
-    int x; 
-    Location(int y, int x){
-        this.y = y;
-        this.x = x;
-    }
-    
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        Location location = (Location) obj;
-        return y == location.y && x == location.x;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(y, x);
-    }
-}
-
 class Solution {
     public int solution(int[][] rectangle, int characterX, int characterY, int itemX, int itemY) {
-        int answer = 0;
-        boolean[][] borderLines = new boolean[101][101];
-        boolean[][] visited = new boolean[101][101];
-        Set<Location> area = new HashSet<>();
-        Queue<Location> locations = new ArrayDeque<>();
-        int[] dx = {1, 0, -1, 0};
-        int[] dy = {0, 1, 0, -1};
+        int answer = -1;
+        int[][] map = new int[101][101];
+        Queue<Integer[]> queue = new ArrayDeque<>();
+        int[][] directions = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
+        boolean visited[][] = new boolean[101][101];
         
-        for(int i = 0; i < rectangle.length; i++){
-            int x1 = rectangle[i][0] * 2;
-            int y1 = rectangle[i][1] * 2;
-            int x2 = rectangle[i][2] * 2;
-            int y2 = rectangle[i][3] * 2;
+        for(int[] rec : rectangle){
+            int x1 = rec[0] * 2;
+            int y1 = rec[1] * 2;
+            int x2 = rec[2] * 2;
+            int y2 = rec[3] * 2;
             
-            for(int j = x1 + 1; j < x2; j++){
-                for(int k = y1 + 1; k < y2; k++){
-                    area.add(new Location(k, j));
+            for(int i = x1; i <= x2; i++) {
+                for(int j = y1; j <= y2; j++) {
+                    map[i][j] = 1;
                 }
             }
         }
         
-        for(int i = 0; i < rectangle.length; i++){
-            int x1 = rectangle[i][0] * 2;
-            int y1 = rectangle[i][1] * 2;
-            int x2 = rectangle[i][2] * 2;
-            int y2 = rectangle[i][3] * 2;
+        for(int[] rec : rectangle){
+            int x1 = rec[0] * 2;
+            int y1 = rec[1] * 2;
+            int x2 = rec[2] * 2;
+            int y2 = rec[3] * 2;
             
-            for(int j = x1; j <= x2; j++){
-                if(!area.contains(new Location(y1 , j))){
-                    borderLines[y1][j] = true;
-                }
-                
-                if(!area.contains(new Location(y2 , j))){
-                    borderLines[y2][j] = true;
-                }
-            }
-            
-            for(int j = y1; j <= y2; j++){
-                if(!area.contains(new Location(j , x1))){
-                    borderLines[j][x1] = true;
-                }
-                
-                if(!area.contains(new Location(j , x2))){
-                    borderLines[j][x2] = true;
+            for(int i = x1 + 1; i < x2; i++) {
+                for(int j = y1 + 1; j < y2; j++) {
+                    map[i][j] = 0;
                 }
             }
         }
         
-        locations.add(new Location(characterY * 2, characterX * 2));
-        visited[characterY * 2][characterX * 2] = true;
-        while(!locations.isEmpty()){
-            int size = locations.size();
+        queue.add(new Integer[]{characterX*2, characterY*2});
+        visited[characterX*2][characterY*2] = true;
+        
+        while(!queue.isEmpty()){
+            answer++;
+            int size = queue.size();
             while(size-- > 0){
-                Location currentLocation = locations.poll();
-                if(currentLocation.x == itemX * 2 && currentLocation.y == itemY * 2){
-                    return answer / 2;
+                Integer[] currentPoint = queue.poll();
+                int currentRow = currentPoint[0];
+                int currentCol = currentPoint[1];
+                
+                if(currentRow == itemX*2 && currentCol == itemY*2){
+                    answer /= 2; 
+                    return answer;
                 }
                 
                 for(int i = 0; i < 4; i++){
-                    int newX = currentLocation.x + dx[i];
-                    int newY = currentLocation.y + dy[i];
-                    if(newX > 0 && newX <= 100 && newY > 0 && newY <= 100 && borderLines[newY][newX] && !visited[newY][newX]){
-                        locations.add(new Location(newY, newX));
-                        visited[newY][newX] = true;
+                    int nextRow = currentRow + directions[i][0];
+                    int nextCol = currentCol + directions[i][1];
+                    
+                    if(nextRow >= 0 && nextRow <= 100 && nextCol >= 0 && nextCol <= 100 && !visited[nextRow][nextCol] && map[nextRow][nextCol] == 1){
+                        queue.add(new Integer[]{nextRow, nextCol});
+                        visited[nextRow][nextCol] = true;
                     }
                 }
             }
-            answer++;
         }
+        
         return answer;
     }
 }
