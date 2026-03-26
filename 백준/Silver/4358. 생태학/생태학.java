@@ -21,8 +21,8 @@ public class Main {
 		Collections.sort(list);
 
 		for (String key : list) {
-			double persent = (double) hashmap.get(key) * 100 / totalCount;
-			sb.append(key).append(" ").append(String.format("%.4f", persent)).append("\n");
+			double percent = (double) hashmap.get(key) * 100 / totalCount;
+			sb.append(key).append(" ").append(String.format("%.4f", percent)).append("\n");
 		}
 
 		System.out.println(sb);
