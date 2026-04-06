@@ -1,28 +1,12 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.StringTokenizer;
 
 public class Main {
-	public static final int INF = 500_000;
-
-	public static class Node implements Comparable<Node> {
-		int idx;
-		int cost;
-
-		public Node(int idx, int cost) {
-			this.idx = idx;
-			this.cost = cost;
-		}
-
-		@Override
-		public int compareTo(Node other) {
-			return this.cost - other.cost;
-		}
-	}
-
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
@@ -33,10 +17,10 @@ public class Main {
 		int X = Integer.parseInt(st.nextToken());
 		ArrayList<Integer>[] list = new ArrayList[N + 1];
 		int[] distances = new int[N + 1];
-		PriorityQueue<Node> queue = new PriorityQueue<>();
-		Arrays.fill(distances, INF);
+		Queue<Integer> queue = new ArrayDeque<>();
+		Arrays.fill(distances, -1);
 		distances[X] = 0;
-		queue.add(new Node(X, 0));
+		queue.add(X);
 
 		for (int i = 1; i <= N; i++) {
 			list[i] = new ArrayList<>();
@@ -50,18 +34,16 @@ public class Main {
 		}
 
 		while (!queue.isEmpty()) {
-			Node curr = queue.poll();
-			int currIdx = curr.idx;
-			int currCost = curr.cost;
+			int curr = queue.poll();
 
-			if (distances[currIdx] < currCost) {
+			if (distances[curr] >= K) {
 				continue;
 			}
 
-			for (int next : list[currIdx]) {
-				if (distances[next] > distances[currIdx] + 1) {
-					distances[next] = distances[currIdx] + 1;
-					queue.add(new Node(next, distances[next]));
+			for (int next : list[curr]) {
+				if (distances[next] == -1) {
+					distances[next] = distances[curr] + 1;
+					queue.add(next);
 				}
 			}
 		}
