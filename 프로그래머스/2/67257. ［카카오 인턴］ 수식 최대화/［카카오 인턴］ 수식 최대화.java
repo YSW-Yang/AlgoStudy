@@ -35,7 +35,7 @@ class Solution {
                         tempNumbers.set(j, tempRes);
                         tempNumbers.remove(j + 1);
                         tempOperations.remove(j);
-                        j--;
+                        j--; 
                     }
                 }
             }
@@ -43,6 +43,7 @@ class Solution {
             long res = Math.abs(tempNumbers.get(0));
             answer = Math.max(answer, res);
         }
+        
         return answer;
     }
     
