@@ -39,5 +39,5 @@ class Solution {
             combine(i + 1, password, n, depth + 1, ans);
             password -= 1 << i;
         }
-    }
+    } 
 }
