@@ -1,6 +1,6 @@
 import java.util.*;
 class Solution {
-    public boolean[][] storageMap;
+    public boolean[][] removed;
     public int n;
     public int m;
     
@@ -8,22 +8,18 @@ class Solution {
         int answer = 0;
         n = storage.length;
         m = storage[0].length();
-        storageMap = new boolean[n][m];
+        removed = new boolean[n][m];
         answer = n*m;
         
         for(String request : requests){
             List<int[]> list = new ArrayList<>();
-            for(int i = 0; i < n; i++){
-                for(int j = 0; j < m; j++){
-                    if(request.length() == 1){
-                        if(request.charAt(0) == storage[i].charAt(j) && !storageMap[i][j]){
-                            if(bfs(i,j)){
-                                list.add(new int[] {i, j});
-                            }
-                        }
-                    }else{
-                        if(request.charAt(0) == storage[i].charAt(j) && !storageMap[i][j]){
-                            storageMap[i][j] = true;
+            if(request.length() == 1){
+                list = bfs(storage, request.charAt(0));
+            }else{
+                for(int i = 0; i < n; i++){
+                    for(int j = 0; j < m; j++){
+                        if(request.charAt(0) == storage[i].charAt(j) && !removed[i][j]){
+                            removed[i][j] = true;
                             answer--;
                         }
                     }
@@ -31,19 +27,26 @@ class Solution {
             }
             
             for(int[] point : list){
-                storageMap[point[0]][point[1]] = true;
+                removed[point[0]][point[1]] = true;
                 answer--;
             }
         }
         return answer;
     }
     
-    public boolean bfs(int row, int col){
+    public List<int[]> bfs(String[] storage, char target){
         Queue<int[]> queue = new ArrayDeque<>();
+        List<int[]> list = new ArrayList<>();
         boolean[][] visited = new boolean[n][m];
         int[][] directions = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
-        queue.add(new int[] {row, col});
-        visited[row][col] = true;
+        for(int i = 0; i < n; i++){
+            queue.add(new int[] {i, -1});
+            queue.add(new int[] {i, m});
+        }
+        for(int i = 0; i < m; i++){
+            queue.add(new int[] {-1, i});
+            queue.add(new int[] {n, i});
+        }
         
         while(!queue.isEmpty()){
             int[] cur = queue.poll();
@@ -52,14 +55,23 @@ class Solution {
                 int newCol = cur[1] + direction[1];
                 
                 if(newRow < 0 || newRow >= n || newCol < 0 || newCol >= m){
-                    return true;
-                }else if(storageMap[newRow][newCol] && !visited[newRow][newCol]){
+                    continue;
+                }
+                
+                if(visited[newRow][newCol]){
+                    continue;
+                }
+                
+                if(removed[newRow][newCol]){
                     queue.add(new int[] {newRow, newCol});
+                    visited[newRow][newCol] = true;
+                }else if(storage[newRow].charAt(newCol) == target){
+                    list.add(new int[] {newRow, newCol});
                     visited[newRow][newCol] = true;
                 }
             }
         }
         
-        return false;
+        return list;
     }
 }
