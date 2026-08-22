@@ -2,7 +2,7 @@ class Solution {
     public int solution(int[] diffs, int[] times, long limit) {
         int answer = 0;
         int left = 1;
-        int right = 0;
+        int right = 0; 
         
         for(int i = 0; i < diffs.length; i++){
             right = Math.max(right, diffs[i]);
