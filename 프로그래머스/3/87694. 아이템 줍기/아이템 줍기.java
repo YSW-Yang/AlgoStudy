@@ -11,7 +11,7 @@ class Solution {
         itemX *= 2;
         itemY *= 2;
         queue.add(new int[] {characterX, characterY, 0});
-        visited[characterX][characterY] = true;
+        visited[characterY][characterX] = true;
         
         for(int[] point : rectangle){
             int x1 = point[0] * 2;
@@ -21,7 +21,7 @@ class Solution {
             
             for(int i = x1; i <= x2; i++){
                 for(int j = y1; j <= y2; j++){
-                    map[i][j] = 1;
+                    map[j][i] = 1;
                 }
             }
         }
@@ -34,7 +34,7 @@ class Solution {
             
             for(int i = x1 + 1; i < x2; i++){
                 for(int j = y1 + 1; j < y2; j++){
-                    map[i][j] = 0;
+                    map[j][i] = 0;
                 }
             }
         }
@@ -50,12 +50,12 @@ class Solution {
             }
             
             for(int[] direction : directions){
-                int nextX = x + direction[0];
-                int nextY = y + direction[1];
+                int nextY = y + direction[0];
+                int nextX = x + direction[1];
                 
-                if(nextX >= 0 && nextX <= 100 && nextY >= 0 && nextY <= 100 && !visited[nextX][nextY] && map[nextX][nextY] == 1){
+                if(nextX >= 0 && nextX <= 100 && nextY >= 0 && nextY <= 100 && !visited[nextY][nextX] && map[nextY][nextX] == 1){
                     queue.add(new int[] {nextX, nextY, count + 1});
-                    visited[nextX][nextY] = true;
+                    visited[nextY][nextX] = true;
                 }
             }
         }
