@@ -1,38 +1,39 @@
-import java.util.Queue;
-import java.util.ArrayDeque;
+import java.util.*;
 class Solution {
-	public int solution(int[][] maps) {
-		int answer = 0, count = 1;
-		Queue<Integer> arrQueue = new ArrayDeque();
-		int[][] arr = { { -1, 0 }, { 0, 1 }, { 1, 0 }, { 0, -1 } };
-		boolean[][] visited = new boolean[maps.length][maps[0].length];
-		visited[0][0] = true;
-		int sRow = 0;
-		int sCol = 0;
-
-		while (true) {
-			count++;
-			for (int k = 0; k < arr.length; k++) {
-				int nRow = sRow + arr[k][0];
-				int nCol = sCol + arr[k][1];
-				if (nRow >= 0 && nRow < maps.length && nCol >= 0 && nCol < maps[0].length && !visited[nRow][nCol]
-						&& maps[nRow][nCol] == 1) {
-					arrQueue.add(nRow);
-					arrQueue.add(nCol);
-					arrQueue.add(count);
-					visited[nRow][nCol] = true;
-				}
-			}
-			if (!arrQueue.isEmpty()) {
-				sRow = arrQueue.poll();
-				sCol = arrQueue.poll();
-				count = arrQueue.poll();
-				if (sRow == maps.length - 1 && sCol == maps[0].length - 1) {
-					return count;
-				}
-			} else {
-				return -1;
-			}
-		}
-	}
+    public int solution(int[][] maps) {
+        int answer = 0;
+        Queue<int[]> queue = new ArrayDeque<>();
+        int n = maps.length;
+        int m = maps[0].length;
+        boolean[][] visited = new boolean[n][m];
+        int[][] directions = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
+        queue.add(new int[] {0, 0});
+        visited[0][0] = true;
+        
+        while(!queue.isEmpty()){
+            int size = queue.size();
+            answer++;
+            while(size-- > 0){
+                int[] cur = queue.poll();
+                int row = cur[0];
+                int col = cur[1];
+                
+                if(row == n - 1 && col == m - 1){
+                    return answer;
+                }
+                
+                for(int[] direction : directions){
+                    int newRow = row + direction[0];
+                    int newCol = col + direction[1];
+                    
+                    if(newRow >= 0 && newRow < n && newCol >= 0 && newCol < m && !visited[newRow][newCol] && maps[newRow][newCol] == 1){
+                        queue.add(new int[] {newRow, newCol});
+                        visited[newRow][newCol] = true;
+                    }
+                }
+            }
+        }
+        
+        return -1;
+    }
 }
