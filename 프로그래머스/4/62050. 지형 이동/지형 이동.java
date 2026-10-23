@@ -1,114 +1,103 @@
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Queue;
-
+import java.util.*;
 class Solution {
-
-	private static int[] parent;
-	private static ArrayList<Edge> edgeList;
-
-	private static int findSet(int a) {
-		if (parent[a] == a) {
-			return a;
-		}
-
-		return parent[a] = findSet(parent[a]);
-	}
-
-	private static boolean union(int a, int b) {
-		int aRoot = findSet(a);
-		int bRoot = findSet(b);
-
-		if (aRoot == bRoot) {
-			return false;
-		}
-
-		parent[bRoot] = aRoot;
-		return true;
-	}
-
-	private static class Edge implements Comparable<Edge> {
-		int from;
-		int to;
-		int weight;
-
-		public Edge(int from, int to, int weight) {
-			super();
-			this.from = from;
-			this.to = to;
-			this.weight = weight;
-		}
-
-		@Override
-		public int compareTo(Edge o) {
-			return this.weight - o.weight;
-		}
-
-	}
-
-	public int solution(int[][] land, int height) {
-		int answer = 0;
-		int n = land.length;
-		int[][] landNumber = new int[n][n];
-		boolean[][] visited = new boolean[n][n];
-		int count = 0;
-		int[][] direction = { { -1, 0 }, { 0, 1 }, { 1, 0 }, { 0, -1 } };
-		Queue<int[]> queue = new ArrayDeque<int[]>();
-
-		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < n; j++) {
-				if (!visited[i][j]) {
-					queue.add(new int[] { i, j });
-					visited[i][j] = true;
-					count++;
-					landNumber[i][j] = count;
-					while (!queue.isEmpty()) {
-						int[] sd = queue.poll();
-						for (int k = 0; k < direction.length; k++) {
-							int nRow = sd[0] + direction[k][0];
-							int nCol = sd[1] + direction[k][1];
-							if (nRow >= 0 && nRow < n && nCol >= 0 && nCol < n && !visited[nRow][nCol]) {
-								int difference = Math.abs(land[nRow][nCol] - land[sd[0]][sd[1]]);
-								if (difference <= height) {
-									queue.add(new int[] { nRow, nCol });
-									visited[nRow][nCol] = true;
-									landNumber[nRow][nCol] = count;
-								}
-							}
-						}
-
-					}
-				}
-			}
-		}
-
-		parent = new int[count + 1];
-		edgeList = new ArrayList<Solution.Edge>();
-		for (int i = 0; i < parent.length; i++) {
-			parent[i] = i;
-		}
-
-		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < n; j++) {
-				for (int k = 0; k < direction.length; k++) {
-					int nRow = i + direction[k][0];
-					int nCol = j + direction[k][1];
-					if (nRow >= 0 && nRow < n && nCol >= 0 && nCol < n && landNumber[nRow][nCol] != landNumber[i][j]) {
-						edgeList.add(new Edge(landNumber[i][j], landNumber[nRow][nCol],
-								Math.abs(land[nRow][nCol] - land[i][j])));
-					}
-				}
-			}
-		}
-		Collections.sort(edgeList);
-
-		for (Edge e : edgeList) {
-			if (union(e.from, e.to)) {
-				answer += e.weight;
-			}
-		}
-
-		return answer;
-	}
+    
+    private int[] parent;
+    
+    private int find(int x){
+        if(x == parent[x]){
+            return x;
+        }
+        
+        parent[x] = find(parent[x]);
+        return parent[x];
+    }
+    
+    private boolean union(int a, int b){
+        int pa = find(a);
+        int pb = find(b);
+        
+        if(pa != pb){
+            parent[pb] = pa;
+            return true;
+        }
+        
+        return false;
+    }
+    
+    public int solution(int[][] land, int height) {
+        int answer = 0;
+        int N = land.length;
+        int[][] landNode = new int[N][N];
+        Queue<int[]> queue = new ArrayDeque<>();
+        boolean[][] visited = new boolean[N][N];
+        int[][] directions = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
+        
+        int nodeIndex = 0;
+        for(int i = 0; i < N; i++){
+            for(int j = 0; j < N; j++){
+                if(!visited[i][j]){
+                    nodeIndex++;
+                    queue.add(new int[] {i, j});
+                    visited[i][j] = true;
+                    
+                    while(!queue.isEmpty()){
+                        int[] cur = queue.poll();
+                        int row = cur[0];
+                        int col = cur[1];
+                        landNode[row][col] = nodeIndex;
+                        
+                        for(int[] direction : directions){
+                            int newRow = row + direction[0];
+                            int newCol = col + direction[1];
+                            
+                            if(newRow >= 0 && newRow < N && newCol >= 0 && newCol < N && !visited[newRow][newCol] && Math.abs(land[row][col] - land[newRow][newCol]) <= height){
+                                queue.add(new int[] {newRow, newCol});
+                                visited[newRow][newCol] = true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        parent = new int[nodeIndex + 1];
+        for(int i = 1; i <= nodeIndex; i++){
+            parent[i] = i;
+        }
+        
+        List<int[]> edgeList = new ArrayList<>();
+        for(int i = 0; i < N; i++){
+            for(int j = 0; j < N; j++){
+                for(int[] direction : directions){
+                    int newRow = i + direction[0];
+                    int newCol = j + direction[1];
+                    
+                    if(newRow >= 0 && newRow < N && newCol >= 0 && newCol < N && landNode[i][j] != landNode[newRow][newCol]){
+                        int from = landNode[i][j];
+                        int to = landNode[newRow][newCol];
+                        int cost = Math.abs(land[i][j] - land[newRow][newCol]);
+                        edgeList.add(new int[] {from, to, cost});
+                    }
+                }
+            }
+        }
+        Collections.sort(edgeList, (o1, o2) -> Integer.compare(o1[2], o2[2]));
+        
+        int count = 0;
+        for(int[] edge : edgeList){
+            if(count == nodeIndex - 1){
+                break;
+            }
+            
+            int from = edge[0];
+            int to = edge[1];
+            int cost = edge[2];
+            if(union(from, to)){
+                answer += cost;
+                count++;
+            }
+        }
+        
+        return answer;
+    }
 }
