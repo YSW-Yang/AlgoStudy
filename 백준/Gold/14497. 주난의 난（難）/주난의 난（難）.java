@@ -11,9 +11,11 @@ public class Main {
 		N = Integer.parseInt(st.nextToken());
 		M = Integer.parseInt(st.nextToken());
 		char[][] map = new char[N][M];
-		String[] strArr = br.readLine().split(" ");
-		int sRow = Integer.parseInt(strArr[0]) - 1;
-		int sCol = Integer.parseInt(strArr[1]) - 1;
+		st = new StringTokenizer(br.readLine());
+		int sRow = Integer.parseInt(st.nextToken()) - 1;
+		int sCol = Integer.parseInt(st.nextToken()) - 1;
+		int eRow = Integer.parseInt(st.nextToken()) - 1;
+		int eCol = Integer.parseInt(st.nextToken()) - 1;
 
 		for (int i = 0; i < N; i++) {
 			String str = br.readLine();
@@ -22,48 +24,50 @@ public class Main {
 			}
 		}
 
-		int count = 1;
-		while (!bfs(sRow, sCol, map)) {
-			count++;
-		}
-		System.out.println(count);
+		System.out.println(bfs(sRow, sCol, eRow, eCol, map));
 	}
 
-	public static boolean bfs(int sRow, int sCol, char[][] map) {
-		Queue<int[]> queue = new ArrayDeque<>();
-		boolean[][] visited = new boolean[N][M];
+	public static int bfs(int sRow, int sCol, int eRow, int eCol, char[][] map) {
+		Deque<int[]> queue = new ArrayDeque<>();
+		int[][] dist = new int[N][M];
 		int[][] directions = { { -1, 0 }, { 0, 1 }, { 1, 0 }, { 0, -1 } };
+		int INF = Integer.MAX_VALUE;
 		queue.add(new int[] { sRow, sCol });
-		visited[sRow][sCol] = true;
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < M; j++) {
+				dist[i][j] = INF;
+			}
+		}
+		dist[sRow][sCol] = 1;
 
 		while (!queue.isEmpty()) {
 			int[] cur = queue.poll();
 			int row = cur[0];
 			int col = cur[1];
 
-			if (map[row][col] == '#') {
-				return true;
+			if (row == eRow && col == eCol) {
+				return dist[row][col];
 			}
 
 			for (int i = 0; i < 4; i++) {
 				int nr = row + directions[i][0];
 				int nc = col + directions[i][1];
 
-				if (nr < 0 || nr >= N || nc < 0 || nc >= M || visited[nr][nc]) {
+				if (nr < 0 || nr >= N || nc < 0 || nc >= M || dist[nr][nc] != INF) {
 					continue;
 				}
-				
-				visited[nr][nc] = true;
-				
+
 				if (map[nr][nc] == '1') {
-					map[nr][nc] = '0';
+					queue.addLast(new int[] { nr, nc });
+					dist[nr][nc] = dist[row][col] + 1;
 				} else {
-					queue.add(new int[] { nr, nc });
+					queue.addFirst(new int[] { nr, nc });
+					dist[nr][nc] = dist[row][col];
 				}
 
 			}
 		}
 
-		return false;
+		return -1;
 	}
 }
